@@ -7,6 +7,7 @@ const router = express.Router()
 router.post('/', requireAuth, async (req, res) => {
   try {
     const { ingredients, equipment, cuisine, timeLimit } = req.body
+    console.log('Generate request received:', { ingredients, equipment, cuisine, timeLimit })
 
     if (!ingredients || ingredients.length === 0) {
       return res.status(400).json({ error: 'At least one ingredient is required' })
@@ -17,10 +18,12 @@ router.post('/', requireAuth, async (req, res) => {
     }
 
     const recipe = await generateRecipe({ ingredients, equipment, cuisine, timeLimit })
+    console.log('Recipe generated successfully')
     res.json({ recipe })
 
   } catch (error) {
-    console.error('Generate error:', error)
+    console.error('Generate error full details:', error.message)
+    console.error(error)
     res.status(500).json({ error: 'Failed to generate recipe' })
   }
 })

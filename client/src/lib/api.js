@@ -5,11 +5,12 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
 })
 
-// Automatically attach the user's auth token to every request
 api.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession()
-  if (session?.access_token) {
-    config.headers.Authorization = `Bearer ${session.access_token}`
+  const { data } = await supabase.auth.getSession()
+  const token = data?.session?.access_token
+  console.log('Token being sent:', token ? 'exists' : 'MISSING')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
